@@ -22,4 +22,6 @@ export const ReloaderMessagesResponseSchema = z.object({
     data: z.array(ChatMessageSchema).default([]),
 })
 
+export type Gender = "m" | "f" | "d"
+
 export type ChatMessage = z.infer<typeof ChatMessageSchema>;
