@@ -1,0 +1,14 @@
+### GET request
+POST https://www.chatroom2000.de/chat/?CheckUserName
+Content-Type: application/x-www-form-urlencoded
+Cookie: cookiefirst-consent='{"necessary":true,"performance":true,"functional":true,"advertising":true,"timestamp":1779114641,"type":"category","version":"d8d5b5d0-98f4-40b4-823b-fce450d4a968"}';
+Cookie: cookie_anzahl_logins_in_XX_sek=1
+Cookie: cookie_last_login=1779114654
+Cookie: db1_cookie_test=1779114624
+Cookie: PHPSESSID=brs084qlclmpglfpas90ofpgel
+
+username=lena4&gender=f&pw=&rules=&2d13f10ab8e641e5ddbf267c88e18ba7=1779114625
+
+
+### GET (cookie + md5), weird thing as javascript
+GET https://www.chatroom2000.de/chat/?Kiki&ver=1.12.4
