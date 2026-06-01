@@ -1,6 +1,6 @@
 import {z} from "zod";
 
-export const ChatMessageSchema = z.object({
+export const RawChatMessageSchema = z.object({
     id: z.string(), // empty if private
     user: z.string(), // username
     user_id: z.string(), // number as string
@@ -16,12 +16,46 @@ export const ChatMessageSchema = z.object({
     user_medal_title: z.string(), // title of the user medal
 })
 
+export type RawChatMessage = z.infer<typeof RawChatMessageSchema>;
+
+export const ChatMessageSchema = RawChatMessageSchema.transform(raw => ({
+    id: Number(raw.id),
+    author: {
+        id: Number(raw.user_id),
+        username: raw.user,
+        sex: raw.sex,
+        avatarUrl: raw.user_av
+    },
+    timestamp: raw.time,
+    visibility:
+        raw.privat === "0"
+            ? {
+                type: "public",
+                isPrivate: false
+            }
+            : {
+                type: "private",
+                isPrivate: true,
+                conversationId: Number(raw.privat),
+            },
+    content: raw.message.trim(),
+    medal: {
+        id: raw.user_medal,
+        title: raw.user_medal_title,
+    },
+    style: {
+        css: raw.css,
+        background: raw.bg
+    }
+}))
+
+export type ChatMessage = z.infer<typeof ChatMessageSchema>;
+
 export const ReloaderMessagesResponseSchema = z.object({
     u_coins: z.string(), // number as string
     coins_addition: z.string(), // number as string
-    data: z.array(ChatMessageSchema).default([]),
+    data: z.array(RawChatMessageSchema).default([]),
 })
 
 export type Gender = "m" | "f" | "d"
 
-export type ChatMessage = z.infer<typeof ChatMessageSchema>;

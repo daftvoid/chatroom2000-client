@@ -1,4 +1,4 @@
-# cfish
+# Chatroom2000 Client
 
 To install dependencies:
 

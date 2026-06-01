@@ -1,9 +1,14 @@
-import {type ChatMessage, type Gender, ReloaderMessagesResponseSchema} from "./types.ts";
+import {type ChatMessage, type Gender, ReloaderMessagesResponseSchema, ChatMessageSchema} from "./types.ts";
 import {chromium} from "playwright";
+import { EventEmitter } from 'node:events';
 
-export class Chatroom2000Client {
+export class Chatroom2000Client extends EventEmitter {
     private cookieHeader: string = ""
+    private connected = false;
+
+    events: ChatMessage[] = []
     messages: ChatMessage[] = []
+
     pending: { message: string, privat: string, resolve: Function }[] = []
     rateLimitUntil: number = 0
 
@@ -12,9 +17,13 @@ export class Chatroom2000Client {
     }
 
     constructor(private name: string, private gender: Gender) {
+        super();
     }
 
     async connect() {
+        if (this.connected) return;
+        this.connected = true;
+
         const browser = await chromium.launch({
             headless: false,
         });
@@ -64,10 +73,14 @@ export class Chatroom2000Client {
 
         console.log(this.cookieHeader);
 
+        setInterval(async () => {
+            await this.fetchMessages()
+        }, 3000)
+
         await browser.close();
     }
 
-    async fetchMessages() {
+    private async fetchMessages() {
         const formData = new FormData();
 
         formData.append("room", "1")
@@ -94,19 +107,28 @@ export class Chatroom2000Client {
         const raw = await res.json();
         const data = ReloaderMessagesResponseSchema.parse(raw);
 
-        data.data.forEach(m => {
-            this.messages.push(m);
+        data.data.forEach(rawm => {
+            const m = ChatMessageSchema.parse(rawm)
 
-            if (m.user === "System") {
-                if (m.message === "Spam! Hattest du nicht exakt dasselbe vor kurzem geschrieben?") {
+            this.events.push(m);
+            this.emit('event', m)
+
+            if (m.author.username === "System") {
+                this.emit('system', m)
+
+                if (m.content === "Spam! Hattest du nicht exakt dasselbe vor kurzem geschrieben?") {
                     this.rateLimitUntil = Date.now() + 5000
-                } else if (m.message.match(/Du musst noch \d Sek\. bis zur n&auml;chsten Nachricht warten\./)) {
+                } else if (m.content.match(/Du musst noch \d Sek\. bis zur n&auml;chsten Nachricht warten\./)) {
                     this.rateLimitUntil = Date.now() + 3500
                 }
 
                 if (!this.rateLimited() && msg) {
                     msg.resolve()
+                    this.pending.shift()
                 }
+            } else {
+                this.messages.push(m)
+                this.emit('message', m)
             }
         })
 

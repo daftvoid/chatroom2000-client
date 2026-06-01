@@ -1,5 +1,5 @@
 {
-  "name": "cfish",
+  "name": "chatroom2000-client",
   "module": "index.ts",
   "type": "module",
   "private": true,
