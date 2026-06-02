@@ -91,6 +91,17 @@ export class Chatroom2000Client extends EventEmitter {
         await browser.close();
     }
 
+    async logout() {
+        if (!this.connected) return;
+        this.connected = false;
+
+        await fetch("https://www.chatroom2000.de/chat/?Logout=&r=1", {
+            headers: {
+                cookies: this.cookieHeader
+            }
+        })
+    }
+
     private async fetchMessages() {
         const formData = new FormData();
 
