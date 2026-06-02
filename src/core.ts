@@ -23,7 +23,7 @@ export class Chatroom2000Client extends EventEmitter {
         return Date.now() < this.rateLimitUntil;
     }
 
-    constructor(private name: string, private gender: Gender) {
+    constructor(public readonly username: string, public readonly gender: Gender) {
         super();
     }
 
@@ -54,7 +54,7 @@ export class Chatroom2000Client extends EventEmitter {
         await cookieFirstAcceptButton.click();
 
 
-        await page.locator('input[name="username"]').fill(this.name);
+        await page.locator('input[name="username"]').fill(this.username);
         await page.locator(`label[for="sex_${this.gender}"]`).click()
         await page.locator('button.loginbutton').click();
 
@@ -132,12 +132,10 @@ export class Chatroom2000Client extends EventEmitter {
                 } else if (m.content.match(/Du musst noch \d Sek\. bis zur n&auml;chsten Nachricht warten\./)) {
                     this.rateLimitUntil = Date.now() + 3500
                 }
-
-                if (!this.rateLimited() && msg) {
-                    msg.resolve()
-                    this.pending.shift()
-                }
-            } else {
+            } else if ((m.author.username === this.username) && msg) {
+                msg.resolve()
+                this.pending.shift()
+            }else {
                 this.messages.push(m)
                 this.emit('message', m)
             }

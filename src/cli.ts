@@ -31,6 +31,10 @@ const input = blessed.textbox({
 });
 
 input.on("submit", (text: string) => {
+    if (text.trim() === "") {
+        return;
+    }
+
     if (text.startsWith("@")) {
         const [ rawuser, ...rawmessage ] = text.split(' ')
 
@@ -69,7 +73,7 @@ input.focus()
 
 
 client.on('message', (message: ChatMessage) => {
-    if (message.visibility.isPrivate) {
+    if (message.visibility.isPrivate || message.author.username === client.username) {
         messages.add(`${message.timestamp} \x1b[32m${message.author.username}\x1b[0m (${message.author.sex}): ${message.content}`)
     }
 
