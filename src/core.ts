@@ -148,7 +148,11 @@ export class Chatroom2000Client extends EventEmitter {
 
     private async fetchUsers() {
         const res = await fetch('https://www.chatroom2000.de/chat/?ReloaderUserOnline', {
-            method: 'POST',
+            headers: {
+                cookie: this.cookieHeader,
+                "user-agent": "Mozilla/5.0",
+            },
+            method: 'POST'
         })
 
         const raw = await res.json();
@@ -163,5 +167,17 @@ export class Chatroom2000Client extends EventEmitter {
                 message: text, privat: privat, resolve: resolve
             })
         })
+    }
+
+    resolveUserId(username: string): string | undefined {
+        return this.onlineUsers.find(u => u.user.toLowerCase() === username.toLowerCase())!.user_id ?? undefined
+    }
+
+    async sendPrivateMessage(text: string, user: string): Promise<void> {
+        const id = this.resolveUserId(user);
+
+        if (!id) throw new Error("Id not found")
+
+        return this.sendMessage(text, id)
     }
 }
