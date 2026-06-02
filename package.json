@@ -10,7 +10,8 @@
     "tsx": "^4.22.4"
   },
   "scripts": {
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "cli": "tsx src/cli.ts"
   },
   "peerDependencies": {
     "typescript": "^5"
