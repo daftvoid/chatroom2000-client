@@ -51,10 +51,35 @@ export const ChatMessageSchema = RawChatMessageSchema.transform(raw => ({
 
 export type ChatMessage = z.infer<typeof ChatMessageSchema>;
 
+export const UserOnlineSchema = z.object({
+    user: z.string(),
+    user_id: z.string(),
+    user_avatar: z.string(),
+    user_priv: z.string(),
+    user_sex: z.string(),
+    user_simg: z.string(),
+    user_stext: z.string(),
+    room_id: z.string(),
+    room_allowed: z.number(),
+    room: z.string(), // often "Chat-Room" literal
+    country: z.string(), // country code, like "de"
+    rg: z.string(),
+    ismute: z.string(),
+    user_medal: z.string(),
+    user_medal_title: z.string(),
+})
+
+export type UserOnline = z.infer<typeof UserOnlineSchema>
+
 export const ReloaderMessagesResponseSchema = z.object({
     u_coins: z.string(), // number as string
     coins_addition: z.string(), // number as string
     data: z.array(RawChatMessageSchema).default([]),
+})
+
+export const ReloaderUsersResponseSchema = z.object({
+    userOnline: z.array(UserOnlineSchema),
+    all_empty_rooms: z.unknown()
 })
 
 export type Gender = "m" | "f" | "d"

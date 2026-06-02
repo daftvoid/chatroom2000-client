@@ -4,6 +4,7 @@ To install dependencies:
 
 ```bash
 bun install
+bunx playwright install
 ```
 
 To run:

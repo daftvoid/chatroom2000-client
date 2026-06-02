@@ -4,7 +4,10 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/ink": "^2.0.3",
+    "@types/react": "^19.2.16",
+    "tsx": "^4.22.4"
   },
   "scripts": {
     "dev": "tsx src/index.ts"
@@ -13,7 +16,12 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@types/blessed": "^0.1.27",
+    "blessed": "^0.1.81",
+    "ink": "^7.0.5",
+    "ink-text-input": "^6.0.0",
     "playwright": "^1.60.0",
+    "react": "^19.2.7",
     "zod": "^4.4.3"
   }
 }

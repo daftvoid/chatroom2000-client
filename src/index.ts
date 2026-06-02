@@ -8,13 +8,15 @@ const suffix = crypto.randomUUID()
     .replace(/[^a-z]/gi, "")
     .slice(0, 3);
 
-const username = `Lena_${suffix}`;
+const username = `Kiara_${suffix}`;
 
 const client = new Chatroom2000Client(username, "f")
 
 await client.connect();
 
 // client.sendMessage("<span><img src=\"smilies/79.png\" width=\"99px\" height=\"67px\"></span>").then(r => console.log("message sent"))
+
+client.sendMessage('hi').then(r => console.log("message sent"))
 
 client.on('message', (msg: ChatMessage) => {
     if (!msg.visibility.isPrivate) return;

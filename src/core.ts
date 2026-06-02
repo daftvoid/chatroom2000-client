@@ -1,4 +1,10 @@
-import {type ChatMessage, type Gender, ReloaderMessagesResponseSchema, ChatMessageSchema} from "./types.ts";
+import {
+    type ChatMessage,
+    type Gender,
+    ReloaderMessagesResponseSchema,
+    ChatMessageSchema,
+    ReloaderUsersResponseSchema, type UserOnline
+} from "./types.ts";
 import {chromium} from "playwright";
 import { EventEmitter } from 'node:events';
 
@@ -8,6 +14,7 @@ export class Chatroom2000Client extends EventEmitter {
 
     events: ChatMessage[] = []
     messages: ChatMessage[] = []
+    onlineUsers: UserOnline[] = []
 
     pending: { message: string, privat: string, resolve: Function }[] = []
     rateLimitUntil: number = 0
@@ -77,6 +84,10 @@ export class Chatroom2000Client extends EventEmitter {
             await this.fetchMessages()
         }, 3000)
 
+        setInterval(async () => {
+            await this.fetchUsers()
+        }, 7000)
+
         await browser.close();
     }
 
@@ -133,6 +144,17 @@ export class Chatroom2000Client extends EventEmitter {
         })
 
         return data.data;
+    }
+
+    private async fetchUsers() {
+        const res = await fetch('https://www.chatroom2000.de/chat/?ReloaderUserOnline', {
+            method: 'POST',
+        })
+
+        const raw = await res.json();
+        const data = ReloaderUsersResponseSchema.parse(raw);
+
+        this.onlineUsers = data.userOnline;
     }
 
     async sendMessage(text: string, privat: string = ""): Promise<void> {
