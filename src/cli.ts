@@ -262,7 +262,7 @@ async function handleCommand(
         }
 
         case "addaccount": {
-            const username = args.join(' ');
+            const username = args[0]
             const gender = args[1] as Gender;
 
             if (
