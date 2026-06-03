@@ -1,6 +1,9 @@
 # Chatroom2000 Client
 
-To install dependencies:
+**A simple client to access Chatroom2000, one of the biggest chatroom communities in Germany. Works via the API or the provided CLI.**
+
+## Quick Start
+To install dependencies for the CLI:
 
 ```bash
 bun install
@@ -10,7 +13,13 @@ bunx playwright install
 To run:
 
 ```bash
-bun run index.ts
+bun run cli
 ```
 
-This project was created using `bun init` in bun v1.3.14. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+## List of CLI Commands
+
+`/chat <user>` - Switches to chat with an user  
+`/addaccount <user> <gender>` - Adds an Account to your List of Clients  
+`/account <user>` - Switches to an Account  
+`/public` - Switch to the public chat.  
+`/help` - Shows this list of commands
