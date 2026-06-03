@@ -230,7 +230,7 @@ async function handleCommand(
 
     switch (cmd) {
         case "account": {
-            const username = args[0];
+            const username = args.join(' ');
 
             if (username && accounts.has(username)) {
                 ui.activeAccount = username;
@@ -241,7 +241,7 @@ async function handleCommand(
         }
 
         case "chat": {
-            const username = args[0];
+            const username = args.join(' ');
 
             if (!username) break;
 
@@ -262,7 +262,7 @@ async function handleCommand(
         }
 
         case "addaccount": {
-            const username = args[0];
+            const username = args.join(' ');
             const gender = args[1] as Gender;
 
             if (
@@ -294,16 +294,11 @@ input.on(
     async (text: string) => {
         text = text.trim();
 
-        if (!text) {
-            input.clearValue();
-            return;
-        }
+        input.clearValue();
+        input.focus();
 
         if (text.startsWith("/")) {
             await handleCommand(text);
-
-            input.clearValue();
-            input.focus();
 
             return;
         }
@@ -328,11 +323,9 @@ input.on(
             messagesLog.add(String(err));
         }
 
-        input.clearValue();
-        input.focus();
         render();
     }
-);;
+);
 
 input.key("enter", () => {
     input.submit();
